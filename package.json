@@ -1,0 +1,14 @@
+{
+  "name": "cypress-rahul-course",
+  "version": "1.0.0",
+  "description": "Cypress test course",
+  "main": "index.js",
+  "scripts": {
+    "cypress:open": "cypress open"
+  },
+  "author": "Noe",
+  "license": "ISC",
+  "devDependencies": {
+    "cypress": "^8.3.1"
+  }
+}
