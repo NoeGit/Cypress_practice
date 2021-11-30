@@ -1,5 +1,6 @@
 ///<reference types="cypress"/>
 
+
 describe('7th Testing Suite', () => {
     it('Testing child windows and child tabs using jquery', () => {
 
