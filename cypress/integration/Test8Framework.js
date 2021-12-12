@@ -32,7 +32,7 @@ describe('Hooks and fixtures testing suite', () => {
         cy.get(':input[name="name"]:nth-child(2)').then((el) => {
             const newElement = el.attr('minlength');
             expect(newElement).to.equal('2');
-        });
+        }); 
 
         //ASSERTION FOR DISABLED RADIO BUTTON
         homePage.getEntrepeneurRadioButton().should('be.disabled');
@@ -46,6 +46,25 @@ describe('Hooks and fixtures testing suite', () => {
         });
 
         //CHECKOUT
-        productPage.getCheckoutBtn().click();       
+        productPage.getCheckoutBtn().click();  
+        cy.contains('Checkout').click();
+        cy.get('#country').type('India');
+        cy.get('.suggestions > ul').click();
+        cy.get('#checkbox2').click({force:true});
+        cy.get('.ng-untouched > .btn').click();
+        //THE FOLLOWING COMMENTED CODE DOES NOT WORK BECAUSE THERE ARE WHITESPACES IN STRING. USE .then() TO INVOKE TEXT AND USE 'INCLUDES'
+        // cy.get('.alert').should('have.text', 'Success! Thank you! Your order will be delivered in next few weeks :-)')
+        cy.get('.alert').then((el) => {
+            const actualText = el.text();
+
+            expect(actualText.includes("Success")).to.be.true;
+
+            //OR YOU CAN USE THIS AS WELL
+
+            expect(actualText).to.contain('Success! Thank you! Your order will be delivered in next few weeks :-).');
+            
+        });
+
+
     });
 });
