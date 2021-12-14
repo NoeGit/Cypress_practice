@@ -47,6 +47,7 @@ describe('Hooks and fixtures testing suite', () => {
 
         //CHECKOUT
         productPage.getCheckoutBtn().click();  
+        
         cy.contains('Checkout').click();
         cy.get('#country').type('India');
         cy.get('.suggestions > ul').click();
@@ -56,15 +57,44 @@ describe('Hooks and fixtures testing suite', () => {
         // cy.get('.alert').should('have.text', 'Success! Thank you! Your order will be delivered in next few weeks :-)')
         cy.get('.alert').then((el) => {
             const actualText = el.text();
-
             expect(actualText.includes("Success")).to.be.true;
 
             //OR YOU CAN USE THIS AS WELL
-
             expect(actualText).to.contain('Success! Thank you! Your order will be delivered in next few weeks :-).');
-            
+        });
+        
+
+        //VALIDATE TOTAL IN CART
+        cy.contains('Checkout').click();
+
+        //USE SPECIAL LOCATOR TO DRILL DOWN AND ITERATE THROUGH TOTALS
+        let sum = 0; //DEFINE SUM OUTSIDE OF SCOPE FOR ".each()" FUNCTION
+        cy.get('tr td:nth-child(4) strong').each(($el, index, $list) => {
+            let price = $el.text();
+            // cy.log(price);
+
+            //REMOVE CURRENCY SYMBOLS BY WHITE SPACE AND STORE INTO NEW VARIABLES TO GET FINAL PRICES
+            // cy.log('BEFORE: ' + sum)
+            let splitPrice = price.split(" ");
+            let finalPrice = splitPrice[1].trim();
+            // cy.log('FINAL PRICE: ' + finalPrice);
+
+            //GET SUM OF PRICES
+            sum = Number(sum) + Number(finalPrice);
+          
+        }).then(() => {
+            cy.log(sum);
+            //ASSERTION
+            cy.get('h3 strong').should('have.contain', sum);
         });
 
+        //OR YOU CAN ASSERT TOTAL LIKE THIS
+        cy.get('h3 strong').then(($el) => {
+            const totalAmount = $el.text();
+            const totalNoCurrency = totalAmount.split(" ")[1]
+
+            expect(sum).to.equal(Number(totalNoCurrency));
+        })
 
     });
 });
